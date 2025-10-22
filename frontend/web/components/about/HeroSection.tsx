@@ -26,8 +26,8 @@ export default function HeroSection({ title, subtitle, description }: HeroSectio
           aria-hidden="true"
         />
 
-        {/* Layer 2: Theme-aware overlay */}
-        <div className="absolute inset-0 bg-background/90" aria-hidden="true" />
+        {/* Layer 2: Theme-aware overlay - 9% opacity */}
+        <div className="absolute inset-0 bg-background" style={{ opacity: 0.09 }} aria-hidden="true" />
       </div>
 
       {/* Background gradient overlay */}

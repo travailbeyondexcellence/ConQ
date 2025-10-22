@@ -78,7 +78,9 @@ Each update should include:
 **Purpose**: Defines repository conventions and metadata
 
 Documents:
-- This conventions guide
+- `0 Conventions.md` - This conventions guide (overview)
+- `1 Folder Structure.md` - Directory organization and structure
+- `2 Route Access Control.md` - Access control policies and protected routes
 - Coding standards
 - Commit message formats
 - Branch naming conventions

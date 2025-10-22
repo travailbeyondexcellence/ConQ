@@ -26,8 +26,8 @@ export default function ContactHero({ title, subtitle, description }: ContactHer
           aria-hidden="true"
         />
 
-        {/* Layer 2: Theme-aware overlay */}
-        <div className="absolute inset-0 bg-background/90" aria-hidden="true" />
+        {/* Layer 2: Theme-aware overlay - 9% opacity */}
+        <div className="absolute inset-0 bg-background" style={{ opacity: 0.09 }} aria-hidden="true" />
 
         {/* Layer 3: Gradient accent blobs */}
         <div className="absolute right-0 top-0 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl"></div>

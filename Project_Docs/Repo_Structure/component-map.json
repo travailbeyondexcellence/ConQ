@@ -150,7 +150,7 @@
     "TestPages": {
       "type": "Developer Tools",
       "file": "frontend/web/app/test/",
-      "description": "Development and testing pages",
+      "description": "Development and testing pages (RESTRICTED: Developer, Admin, Super Admin only)",
       "children": ["MermaidTestPage", "ComponentTreePage"]
     },
     "MermaidTestPage": {
@@ -186,7 +186,9 @@
       "This file is manually maintained - update when adding new components",
       "Component relationships are based on logical parent-child structure",
       "File paths are relative to project root",
-      "Some components may not exist yet but are planned in the architecture"
+      "Some components may not exist yet but are planned in the architecture",
+      "TestPages route (/test/*) is RESTRICTED to Developer, Admin, and Super Admin roles only",
+      "Route access control documentation: Project_Docs/Repo_Conventions/2 Route Access Control.md"
     ]
   }
 }
