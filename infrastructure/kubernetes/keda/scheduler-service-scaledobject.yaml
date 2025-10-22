@@ -1,0 +1,61 @@
+# KEDA ScaledObject for Scheduler Service
+# Scales based on NATS queue depth for scheduling tasks
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: scheduler-service-scaler
+  namespace: conq
+spec:
+  scaleTargetRef:
+    name: scheduler-service
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 1
+  maxReplicaCount: 10
+
+  triggers:
+  # Scale based on NATS JetStream consumer lag
+  - type: nats-jetstream
+    metadata:
+      account: "$G"
+      stream: "SCHEDULER"
+      consumer: "scheduler-consumer"
+      lagThreshold: "50"
+      activationLagThreshold: "5"
+    authenticationRef:
+      name: nats-trigger-auth
+
+  # Scale based on MongoDB scheduled posts count
+  - type: mongodb
+    metadata:
+      dbName: "conq"
+      collection: "scheduled_posts"
+      query: '{"status": "pending", "scheduled_time": {"$lte": {"$date": "now"}}}'
+      queryValue: "100"
+      activationQueryValue: "10"
+      connectionStringFromEnv: "MONGO_URI"
+    authenticationRef:
+      name: mongodb-trigger-auth
+
+  # Scale based on time of day (business hours)
+  - type: cron
+    metadata:
+      timezone: "UTC"
+      start: "0 8 * * 1-5"  # Mon-Fri 8 AM
+      end: "0 18 * * 1-5"   # Mon-Fri 6 PM
+      desiredReplicas: "3"
+
+---
+# HPA behavior configuration for fine-tuning
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scheduler-service-scaling-config
+  namespace: conq
+data:
+  scale-up-stabilization: "60"  # seconds
+  scale-down-stabilization: "300" # seconds
+  scale-up-percent: "100"       # double replicas on scale up
+  scale-up-pods: "2"            # or add 2 pods max
+  scale-down-percent: "50"      # halve replicas on scale down
+  scale-down-pods: "1"          # or remove 1 pod max
