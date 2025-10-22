@@ -1,0 +1,109 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Node.js / Bun
+node_modules/
+.next/
+out/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+bun.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Logs
+logs/
+*.log
+*.pid
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-compose.override.yml
+
+# Build artifacts
+/backend/services/*/main
+/backend/api-gateway/gateway
+
+# Generated files
+*.pb.go
+*_gen.go
+
+# Test coverage
+coverage.txt
+coverage.html
+*.cover
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Android
+*.iml
+.gradle
+/frontend/android/local.properties
+/frontend/android/.idea/
+/frontend/android/build
+/frontend/android/captures
+/frontend/android/.externalNativeBuild
+/frontend/android/.cxx
+/frontend/android/app/release
+/frontend/android/app/debug
+
+# iOS
+/frontend/ios/Pods/
+/frontend/ios/*.xcodeproj/xcuserdata/
+/frontend/ios/*.xcworkspace/xcuserdata/
+/frontend/ios/build/
+/frontend/ios/DerivedData/
+/frontend/ios/.swiftpm/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+
+# Secrets
+secrets/
+credentials/
+*.credentials
+
+# MinIO data
+minio-data/
