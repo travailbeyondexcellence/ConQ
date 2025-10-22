@@ -5,7 +5,7 @@ import { VIEWPORT } from '@/lib/animations';
 
 export default function ProductHero() {
   return (
-    <section className="relative overflow-hidden py-20 md:py-32">
+    <section className="relative overflow-hidden min-h-screen flex items-center">
       {/* Background with Unsplash image - faded at 9% opacity */}
       <div className="absolute inset-0 -z-10">
         {/* Layer 1: Background Image - 9% opacity (very faded) */}

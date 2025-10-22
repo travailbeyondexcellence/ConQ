@@ -11,7 +11,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ title, subtitle, description }: HeroSectionProps) {
   return (
-    <motion.section className="relative overflow-hidden py-20 md:py-32">
+    <motion.section className="relative overflow-hidden min-h-screen flex items-center">
       {/* Background with Unsplash image - faded at 9% opacity */}
       <div className="absolute inset-0 -z-10">
         {/* Layer 1: Background Image - 9% opacity (very faded) */}

@@ -6,7 +6,7 @@ import { fadeIn, slideDown, slideUp, zoomIn, float, VIEWPORT } from "@/lib/anima
 export default function Hero() {
   return (
     <motion.section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden min-h-screen flex items-center"
       initial="hidden"
       animate="visible"
     >

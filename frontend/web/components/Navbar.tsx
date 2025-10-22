@@ -41,7 +41,7 @@ export default function Navbar() {
                   href={link.href}
                   className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'text-primary-foreground shadow-md'
+                      ? 'shadow-md'
                       : 'text-foreground/80 hover:text-foreground'
                   }`}
                   style={
@@ -49,6 +49,7 @@ export default function Navbar() {
                       ? {
                           backgroundColor: 'rgb(var(--primary))',
                           boxShadow: '0 2px 8px rgb(var(--primary) / 0.25)',
+                          color: '#ffffff',
                         }
                       : undefined
                   }

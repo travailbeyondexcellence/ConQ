@@ -1,0 +1,86 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e4]:
+      - link "ConQ" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e21]: ConQ
+      - generic [ref=e22]:
+        - link "Home" [ref=e23] [cursor=pointer]:
+          - /url: /
+        - link "Product" [ref=e24] [cursor=pointer]:
+          - /url: /product
+        - link "About" [ref=e25] [cursor=pointer]:
+          - /url: /about
+        - link "Contact" [ref=e26] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e27]:
+        - button "Change theme" [ref=e29]:
+          - img [ref=e30]
+        - link "Log In" [ref=e32] [cursor=pointer]:
+          - /url: /login
+  - generic [ref=e33]:
+    - button "Change theme" [ref=e36]:
+      - img [ref=e37]
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - link [ref=e46] [cursor=pointer]:
+            - /url: /
+            - img [ref=e47]
+          - heading "Create Account" [level=1] [ref=e62]
+          - paragraph [ref=e63]: Join ConQ and start scheduling your content
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - generic [ref=e66]: Full Name
+            - textbox "Full Name" [ref=e67]:
+              - /placeholder: John Doe
+              - text: Test User 1761165536736
+          - generic [ref=e68]:
+            - generic [ref=e69]: Email Address
+            - textbox "Email Address" [ref=e70]:
+              - /placeholder: you@example.com
+              - text: test1761165536736@example.com
+          - generic [ref=e71]:
+            - generic [ref=e72]: Password
+            - generic [ref=e73]:
+              - textbox "Create a strong password" [ref=e74]: TestPass123!
+              - button "Show password" [ref=e75]:
+                - img [ref=e76]
+          - generic [ref=e79]:
+            - generic [ref=e80]: Confirm Password
+            - generic [ref=e81]:
+              - textbox "Re-enter your password" [ref=e82]: TestPass123!
+              - button "Show password" [ref=e83]:
+                - img [ref=e84]
+          - paragraph [ref=e88]: Registration failed
+          - button "Create Account" [ref=e89]
+        - paragraph [ref=e91]:
+          - text: Already have an account?
+          - link "Sign in" [ref=e92] [cursor=pointer]:
+            - /url: /login
+      - paragraph [ref=e93]:
+        - text: By creating an account, you agree to our
+        - link "Terms of Service" [ref=e94] [cursor=pointer]:
+          - /url: /terms
+        - text: and
+        - link "Privacy Policy" [ref=e95] [cursor=pointer]:
+          - /url: /privacy
+  - generic [ref=e100] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e101]:
+      - img [ref=e102]
+    - generic [ref=e105]:
+      - button "Open issues overlay" [ref=e106]:
+        - generic [ref=e107]:
+          - generic [ref=e108]: "1"
+          - generic [ref=e109]: "2"
+        - generic [ref=e110]:
+          - text: Issue
+          - generic [ref=e111]: s
+      - button "Collapse issues badge" [ref=e112]:
+        - img [ref=e113]
+  - alert [ref=e115]
+```

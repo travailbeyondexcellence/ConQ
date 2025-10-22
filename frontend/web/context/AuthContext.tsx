@@ -5,6 +5,7 @@ import { useMutation, useLazyQuery } from '@apollo/client/react';
 import {
   LOGIN,
   LOGOUT,
+  REGISTER,
   VALIDATE_TOKEN
 } from '@/graphql/auth';
 
@@ -23,6 +24,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
 }
@@ -83,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // GraphQL mutations and queries
   const [loginMutation] = useMutation(LOGIN);
+  const [registerMutation] = useMutation(REGISTER);
   const [logoutMutation] = useMutation(LOGOUT);
   const [validateToken] = useLazyQuery(VALIDATE_TOKEN);
 
@@ -158,6 +161,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Register function
+  const register = async (name: string, email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      const { data, errors } = await registerMutation({
+        variables: {
+          input: {
+            name,
+            email,
+            password,
+          },
+        },
+      });
+
+      if (errors || !data?.register) {
+        throw new Error(errors?.[0]?.message || 'Registration failed');
+      }
+
+      const { token, refreshToken, user: userData } = data.register;
+
+      // Store tokens and user data
+      setToken(token);
+      setRefreshToken(refreshToken);
+      setUserData(userData);
+      setUser(userData);
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Provide more user-friendly error messages
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          throw new Error('Unable to connect to server. Please ensure the backend is running.');
+        }
+        throw error;
+      }
+      throw new Error('Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Logout function
   const logout = async () => {
     setIsLoading(true);
@@ -204,6 +247,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: !!user,
     isLoading,
     login,
+    register,
     logout,
     refreshAuth,
   };
