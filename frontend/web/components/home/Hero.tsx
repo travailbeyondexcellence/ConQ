@@ -10,9 +10,9 @@ export default function Hero() {
       initial="hidden"
       animate="visible"
     >
-      {/* Background with Unsplash image and theme-aware overlay */}
+      {/* Background with Unsplash image - faded at 9% opacity */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        {/* Layer 1: Background Image */}
+        {/* Layer 1: Background Image - 9% opacity (very faded) */}
         <div
           className="absolute inset-0"
           style={{
@@ -20,12 +20,10 @@ export default function Hero() {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            opacity: 0.09,
           }}
           aria-hidden="true"
         />
-
-        {/* Layer 2: Theme-aware overlay - 9% opacity */}
-        <div className="absolute inset-0 bg-background" style={{ opacity: 0.09 }} aria-hidden="true" />
 
         {/* Layer 3: Gradient accent blobs */}
         <motion.div

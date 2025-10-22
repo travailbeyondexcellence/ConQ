@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileDropdown() {
   const router = useRouter();
-  const { user, isAuthenticated, logout, isLoading } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

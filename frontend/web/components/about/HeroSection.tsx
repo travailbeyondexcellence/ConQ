@@ -12,9 +12,9 @@ interface HeroSectionProps {
 export default function HeroSection({ title, subtitle, description }: HeroSectionProps) {
   return (
     <motion.section className="relative overflow-hidden py-20 md:py-32">
-      {/* Background with Unsplash image and theme-aware overlay */}
+      {/* Background with Unsplash image - faded at 9% opacity */}
       <div className="absolute inset-0 -z-10">
-        {/* Layer 1: Background Image */}
+        {/* Layer 1: Background Image - 9% opacity (very faded) */}
         <div
           className="absolute inset-0"
           style={{
@@ -22,12 +22,10 @@ export default function HeroSection({ title, subtitle, description }: HeroSectio
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            opacity: 0.09,
           }}
           aria-hidden="true"
         />
-
-        {/* Layer 2: Theme-aware overlay - 9% opacity */}
-        <div className="absolute inset-0 bg-background" style={{ opacity: 0.09 }} aria-hidden="true" />
       </div>
 
       {/* Background gradient overlay */}
