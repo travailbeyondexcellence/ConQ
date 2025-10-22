@@ -1,107 +1,133 @@
 'use client';
 
-import { useTheme, type ThemeKey } from '@/hooks/useTheme';
+import { useState, useEffect, useRef } from 'react';
+import { useTheme } from '@/hooks/useTheme';
 import { getAllThemes } from '@/lib/theme-utils';
-import { useEffect, useState } from 'react';
+import { PaletteIcon } from './Icons';
+import clsx from 'clsx';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ThemeSelector() {
-  const { currentTheme, changeTheme, isLoading } = useTheme();
-  const [themes, setThemes] = useState<ReturnType<typeof getAllThemes>>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const { currentTheme, changeTheme } = useTheme();
+  const themes = getAllThemes();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Handle click outside to close dropdown
   useEffect(() => {
-    setThemes(getAllThemes());
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading && currentTheme) {
-      changeTheme(currentTheme);
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     }
-  }, [isLoading, currentTheme, changeTheme]);
 
-  const handleThemeChange = (themeKey: string) => {
-    changeTheme(themeKey as ThemeKey);
-  };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
 
-  if (isLoading) {
-    return (
-      <div className="flex gap-2 items-center p-4 rounded-lg border border-border" style={{ backgroundColor: 'rgb(var(--card))' }}>
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-        <span className="text-sm text-muted-foreground">Loading themes...</span>
-      </div>
-    );
-  }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Handle ESC key to close dropdown
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 rounded-lg border border-border shadow-sm" style={{ backgroundColor: 'rgb(var(--card))' }}>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-foreground mb-2">Theme Selector</h2>
-        <p className="text-sm text-muted-foreground">
-          Choose your preferred theme. Changes are saved automatically.
-        </p>
-      </div>
+    <div ref={dropdownRef} className="relative">
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-2 rounded-md hover:bg-muted transition-colors"
+        aria-label="Change theme"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <PaletteIcon className="w-5 h-5 text-foreground" />
+      </motion.button>
 
-      <div className="grid grid-cols-2 gap-3">
-        {themes.map((theme) => (
-          <button
-            key={theme.key}
-            onClick={() => handleThemeChange(theme.key)}
-            className={`
-              relative p-4 rounded-lg border-2 transition-all duration-200
-              hover:scale-[1.02] hover:shadow-md
-              ${
-                currentTheme === theme.key
-                  ? 'border-primary'
-                  : 'border-border hover:border-primary/50'
-              }
-            `}
-            style={{
-              backgroundColor: currentTheme === theme.key
-                ? 'rgba(var(--primary), 0.1)'
-                : 'rgb(var(--background))'
-            }}
-          >
-            <div className="flex items-start gap-3">
-              <div
-                className="w-12 h-12 rounded-lg border-2 flex-shrink-0"
-                style={{
-                  backgroundColor: theme.backgroundColor,
-                  borderColor: 'rgb(var(--border))'
-                }}
-              />
-              <div className="flex-1 text-left min-w-0">
-                <h3 className="font-semibold text-foreground mb-1 text-sm truncate">
-                  {theme.name}
-                </h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {theme.description}
-                </p>
-              </div>
-            </div>
-
-            {currentTheme === theme.key && (
-              <div className="absolute top-2 right-2">
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            )}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-6 p-4 rounded-lg" style={{ backgroundColor: 'rgb(var(--muted))' }}>
-        <p className="text-xs text-muted-foreground">
-          Current theme: <span className="font-semibold text-foreground">{themes.find(t => t.key === currentTheme)?.name || currentTheme}</span>
-        </p>
-      </div>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-40"
+              onClick={() => setIsOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            />
+            <motion.div
+              className="absolute right-0 top-full mt-2 w-96 bg-card border border-border rounded-2xl shadow-lg z-50 p-4"
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <h3 className="text-sm font-medium mb-3">Choose Theme</h3>
+              <motion.div className="grid grid-cols-2 gap-2">
+                {themes.map((theme, index) => (
+                  <motion.button
+                    key={theme.key}
+                    onClick={() => {
+                      changeTheme(theme.key as any);
+                      setIsOpen(false);
+                    }}
+                    className={clsx(
+                      'relative flex h-16 rounded-xl border transition-all overflow-hidden group',
+                      currentTheme === theme.key
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-muted-foreground/50 hover:bg-muted hover:text-muted-foreground',
+                    )}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div
+                      className="absolute inset-y-0 left-0 w-[20%] border-r border-border"
+                      style={{
+                        background: `linear-gradient(135deg, ${theme.backgroundColor} 50%, ${theme.primaryColor} 50%)`
+                      }}
+                    />
+                    <div className="flex-1 px-1 py-1 pl-[calc(20%+9px)] text-left flex flex-col justify-center">
+                      <div className="text-[13px] font-medium leading-tight transition-colors">
+                        {theme.name === '☯ MonoChrome' ? (
+                          <>
+                            <span className="inline-block -rotate-90">☯</span> Mono
+                          </>
+                        ) : (
+                          theme.name
+                        )}
+                      </div>
+                      <div className={clsx(
+                        "text-[9px] leading-tight mt-0.5 transition-colors",
+                        currentTheme === theme.key ? "text-muted-foreground" : "text-muted-foreground group-hover:text-foreground/70"
+                      )}>
+                        {theme.description}
+                      </div>
+                    </div>
+                  </motion.button>
+                ))}
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Variants } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 // Default animation durations and easings
 export const DURATIONS = {
