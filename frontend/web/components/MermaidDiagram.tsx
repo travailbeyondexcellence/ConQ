@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 
 interface MermaidDiagramProps {
@@ -8,43 +8,63 @@ interface MermaidDiagramProps {
   className?: string;
 }
 
+// Track if Mermaid has been initialized globally
+let mermaidInitialized = false;
+
 export default function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
   const elementRef = useRef<HTMLDivElement>(null);
-  const [svg, setSvg] = React.useState<string>('');
+  const [svg, setSvg] = useState<string>('');
+  const idRef = useRef(`mermaid-${Math.random().toString(36).substring(7)}`);
 
   useEffect(() => {
-    // Initialize mermaid
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'base',
-      themeVariables: {
-        primaryColor: 'rgb(var(--primary))',
-        primaryTextColor: 'rgb(var(--primary-foreground))',
-        primaryBorderColor: 'rgb(var(--border))',
-        lineColor: 'rgb(var(--border))',
-        secondaryColor: 'rgb(var(--secondary))',
-        tertiaryColor: 'rgb(var(--muted))',
-        background: 'rgb(var(--background))',
-        mainBkg: 'rgb(var(--card))',
-        secondBkg: 'rgb(var(--muted))',
-        textColor: 'rgb(var(--foreground))',
-        border1: 'rgb(var(--border))',
-        border2: 'rgb(var(--border))',
-        fontSize: '16px',
-      },
-    });
+    // Get computed CSS variable values from the DOM
+    const getComputedColor = (varName: string): string => {
+      if (typeof window === 'undefined') return '#000000';
+      const rootStyles = getComputedStyle(document.documentElement);
+      const rgbValues = rootStyles.getPropertyValue(varName).trim();
+      return rgbValues ? `rgb(${rgbValues})` : '#000000';
+    };
+
+    // Initialize mermaid only once globally
+    if (!mermaidInitialized) {
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: {
+          primaryColor: getComputedColor('--primary'),
+          primaryTextColor: getComputedColor('--primary-foreground'),
+          primaryBorderColor: getComputedColor('--border'),
+          lineColor: getComputedColor('--border'),
+          secondaryColor: getComputedColor('--secondary'),
+          tertiaryColor: getComputedColor('--muted'),
+          background: getComputedColor('--background'),
+          mainBkg: getComputedColor('--card'),
+          secondBkg: getComputedColor('--muted'),
+          textColor: getComputedColor('--foreground'),
+          border1: getComputedColor('--border'),
+          border2: getComputedColor('--border'),
+          fontSize: '16px',
+        },
+      });
+      mermaidInitialized = true;
+    }
 
     // Render the diagram
     const renderDiagram = async () => {
+      if (!chart || !chart.trim()) {
+        setSvg('<p style="color: orange;">No diagram content provided</p>');
+        return;
+      }
+
       try {
-        const { svg: renderedSvg } = await mermaid.render(
-          `mermaid-${Date.now()}`,
-          chart
-        );
+        const { svg: renderedSvg } = await mermaid.render(idRef.current, chart);
         setSvg(renderedSvg);
       } catch (error) {
         console.error('Error rendering Mermaid diagram:', error);
-        setSvg('<p style="color: red;">Error rendering diagram</p>');
+        setSvg(
+          `<p style="color: red;">Error rendering diagram. Check console for details.</p>
+           <pre style="color: #666; font-size: 12px; margin-top: 8px;">${error instanceof Error ? error.message : String(error)}</pre>`
+        );
       }
     };
 
