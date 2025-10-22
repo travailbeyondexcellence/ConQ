@@ -1,7 +1,23 @@
 'use client';
 
-import React from 'react';
-import Tree from 'react-d3-tree';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+// Import Tree component with SSR disabled to avoid hydration mismatch
+const Tree = dynamic(() => import('react-d3-tree'), {
+  ssr: false,
+  loading: () => (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      color: 'rgb(var(--muted-foreground))'
+    }}>
+      Loading component tree...
+    </div>
+  ),
+});
 
 // Sample ConQ component hierarchy data
 const conqComponentTree = {
@@ -161,9 +177,11 @@ const conqComponentTree = {
 
 export default function ComponentTreeVisualization() {
   const [translate, setTranslate] = React.useState({ x: 0, y: 0 });
+  const [isMounted, setIsMounted] = React.useState(false);
   const treeContainer = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    setIsMounted(true);
     if (treeContainer.current) {
       const dimensions = treeContainer.current.getBoundingClientRect();
       setTranslate({
@@ -248,18 +266,20 @@ export default function ComponentTreeVisualization() {
           }}
           ref={treeContainer}
         >
-          <Tree
-            data={conqComponentTree}
-            translate={translate}
-            orientation="vertical"
-            pathFunc="step"
-            renderCustomNodeElement={renderNode}
-            separation={{ siblings: 2, nonSiblings: 2 }}
-            nodeSize={{ x: 300, y: 150 }}
-            zoom={0.8}
-            enableLegacyTransitions
-            collapsible
-          />
+          {isMounted && (
+            <Tree
+              data={conqComponentTree}
+              translate={translate}
+              orientation="vertical"
+              pathFunc="step"
+              renderCustomNodeElement={renderNode}
+              separation={{ siblings: 2, nonSiblings: 2 }}
+              nodeSize={{ x: 300, y: 150 }}
+              zoom={0.8}
+              enableLegacyTransitions
+              collapsible
+            />
+          )}
         </div>
 
         <div className="mt-6 p-4 rounded-lg" style={{ backgroundColor: 'rgb(var(--card))', border: '1px solid rgb(var(--border))' }}>
