@@ -1,0 +1,21 @@
+{
+  "name": "conq",
+  "version": "1.0.0",
+  "description": "ConQ - Social Media Content Pipeline Manager",
+  "private": true,
+  "workspaces": [
+    "frontend/web",
+    "backend"
+  ],
+  "scripts": {
+    "web": "cd frontend/web && bun run dev"
+  },
+  "keywords": [
+    "content",
+    "social-media",
+    "pipeline",
+    "manager"
+  ],
+  "author": "",
+  "license": "ISC"
+}
