@@ -19,8 +19,8 @@ const Tree = dynamic(() => import('react-d3-tree'), {
   ),
 });
 
-// Sample ConQ component hierarchy data
-const conqComponentTree = {
+// Fallback/demo component hierarchy data
+const fallbackComponentTree = {
   name: 'App',
   attributes: {
     type: 'Root Component',
@@ -178,10 +178,40 @@ const conqComponentTree = {
 export default function ComponentTreeVisualization() {
   const [translate, setTranslate] = React.useState({ x: 0, y: 0 });
   const [isMounted, setIsMounted] = React.useState(false);
+  const [componentTree, setComponentTree] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = React.useState<string>('');
   const treeContainer = React.useRef<HTMLDivElement>(null);
+
+  // Fetch component tree from API
+  const fetchComponentTree = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('/api/component-map');
+      const result = await response.json();
+
+      if (result.success) {
+        setComponentTree(result.data);
+        setLastUpdated(result.lastUpdated || 'Unknown');
+      } else {
+        setError(result.error || 'Failed to load component map');
+        setComponentTree(fallbackComponentTree);
+      }
+    } catch (err) {
+      console.error('Error fetching component tree:', err);
+      setError('Failed to fetch component map - using fallback data');
+      setComponentTree(fallbackComponentTree);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   React.useEffect(() => {
     setIsMounted(true);
+    fetchComponentTree();
+
     if (treeContainer.current) {
       const dimensions = treeContainer.current.getBoundingClientRect();
       setTranslate({
@@ -245,6 +275,40 @@ export default function ComponentTreeVisualization() {
           Interactive visualization using react-d3-tree
         </p>
 
+        {/* Status and Refresh Section */}
+        <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'rgb(var(--card))', border: '1px solid rgb(var(--border))' }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold" style={{ color: 'rgb(var(--foreground))' }}>
+                Data Source
+              </h2>
+              <p className="text-sm mt-1" style={{ color: 'rgb(var(--muted-foreground))' }}>
+                {loading ? 'Loading...' : error ? (
+                  <span style={{ color: 'rgb(239 68 68)' }}>⚠️ {error}</span>
+                ) : (
+                  <>
+                    <strong>File:</strong> Project_Docs/Repo_Structure/component-map.json<br />
+                    <strong>Last Updated:</strong> {lastUpdated}
+                  </>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={fetchComponentTree}
+              disabled={loading}
+              className="px-4 py-2 rounded-md font-medium transition-all"
+              style={{
+                backgroundColor: loading ? 'rgb(var(--muted))' : 'rgb(var(--primary))',
+                color: 'rgb(var(--primary-foreground))',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.6 : 1
+              }}
+            >
+              {loading ? 'Refreshing...' : '🔄 Refresh'}
+            </button>
+          </div>
+        </div>
+
         <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: 'rgb(var(--card))', border: '1px solid rgb(var(--border))' }}>
           <h2 className="text-xl font-semibold mb-2" style={{ color: 'rgb(var(--foreground))' }}>
             Instructions
@@ -266,9 +330,21 @@ export default function ComponentTreeVisualization() {
           }}
           ref={treeContainer}
         >
-          {isMounted && (
+          {loading && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              color: 'rgb(var(--muted-foreground))',
+              fontSize: '18px'
+            }}>
+              Loading component tree...
+            </div>
+          )}
+          {!loading && isMounted && componentTree && (
             <Tree
-              data={conqComponentTree}
+              data={componentTree}
               translate={translate}
               orientation="vertical"
               pathFunc="step"
@@ -302,6 +378,18 @@ export default function ComponentTreeVisualization() {
               <li>Architectural documentation</li>
               <li>Refactoring planning</li>
             </ul>
+            <p className="mt-4">
+              <strong style={{ color: 'rgb(var(--foreground))' }}>How to Update:</strong>
+            </p>
+            <ol className="list-decimal list-inside ml-4 space-y-1">
+              <li>Edit <code style={{ backgroundColor: 'rgb(var(--muted))', padding: '2px 6px', borderRadius: '4px' }}>Project_Docs/Repo_Structure/component-map.json</code></li>
+              <li>Add new components to the <code style={{ backgroundColor: 'rgb(var(--muted))', padding: '2px 6px', borderRadius: '4px' }}>components</code> object</li>
+              <li>Update parent component's <code style={{ backgroundColor: 'rgb(var(--muted))', padding: '2px 6px', borderRadius: '4px' }}>children</code> array</li>
+              <li>Click the "🔄 Refresh" button above to reload</li>
+            </ol>
+            <p className="mt-3 text-sm">
+              💡 <strong>Tip:</strong> Keep the component map updated as you add new components to maintain accurate documentation!
+            </p>
           </div>
         </div>
       </div>

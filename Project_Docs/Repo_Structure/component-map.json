@@ -1,0 +1,192 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-23",
+  "description": "ConQ Component Architecture Map - Manual configuration for component tree visualization",
+  "components": {
+    "App": {
+      "type": "Root Component",
+      "file": "frontend/web/app/layout.tsx",
+      "description": "Root layout component that wraps the entire application",
+      "children": ["Providers", "RootLayout"]
+    },
+    "Providers": {
+      "type": "Context Providers",
+      "file": "frontend/web/app/providers.tsx",
+      "description": "Wraps app with necessary context providers",
+      "children": ["ApolloProvider", "ThemeProvider"]
+    },
+    "ApolloProvider": {
+      "type": "GraphQL Client",
+      "file": "frontend/web/lib/apolloClient.ts",
+      "description": "Provides GraphQL client to all components",
+      "children": []
+    },
+    "ThemeProvider": {
+      "type": "Theme Context",
+      "file": "frontend/web/context/ThemeContext.tsx",
+      "description": "Manages theme state and provides theme switching",
+      "children": []
+    },
+    "RootLayout": {
+      "type": "Layout Component",
+      "file": "frontend/web/app/layout.tsx",
+      "description": "Main layout structure",
+      "children": ["Header", "Sidebar", "MainContent", "Footer"]
+    },
+    "Header": {
+      "type": "Navigation",
+      "file": "frontend/web/components/Header.tsx",
+      "description": "Top navigation bar",
+      "children": ["Logo", "Navigation", "ThemeSelector", "UserMenu"]
+    },
+    "Logo": {
+      "type": "Branding",
+      "file": "frontend/web/components/Logo.tsx",
+      "description": "Application logo and branding",
+      "children": []
+    },
+    "Navigation": {
+      "type": "Menu",
+      "file": "frontend/web/components/Navigation.tsx",
+      "description": "Main navigation menu",
+      "children": []
+    },
+    "ThemeSelector": {
+      "type": "Theme Switcher",
+      "file": "frontend/web/components/ThemeSelector.tsx",
+      "description": "Dropdown to select from 12 available themes",
+      "children": []
+    },
+    "UserMenu": {
+      "type": "User Actions",
+      "file": "frontend/web/components/UserMenu.tsx",
+      "description": "User profile and actions dropdown",
+      "children": []
+    },
+    "Sidebar": {
+      "type": "Navigation Panel",
+      "file": "frontend/web/components/Sidebar.tsx",
+      "description": "Side navigation panel",
+      "children": []
+    },
+    "MainContent": {
+      "type": "Content Area",
+      "file": "frontend/web/components/MainContent.tsx",
+      "description": "Main content area for pages",
+      "children": ["HomePage", "Dashboard", "AuthPages", "TestPages"]
+    },
+    "HomePage": {
+      "type": "Page",
+      "file": "frontend/web/app/page.tsx",
+      "description": "Landing page with hero section and features",
+      "children": ["HeroSection", "FeaturesSection"]
+    },
+    "HeroSection": {
+      "type": "Section Component",
+      "file": "frontend/web/components/HeroSection.tsx",
+      "description": "Hero section with animated elements",
+      "children": []
+    },
+    "FeaturesSection": {
+      "type": "Section Component",
+      "file": "frontend/web/components/FeaturesSection.tsx",
+      "description": "Features showcase section",
+      "children": []
+    },
+    "Dashboard": {
+      "type": "Page",
+      "file": "frontend/web/app/dashboard/page.tsx",
+      "description": "Main dashboard for authenticated users",
+      "children": ["ContentManager", "Analytics", "Scheduler"]
+    },
+    "ContentManager": {
+      "type": "Feature Module",
+      "file": "frontend/web/components/ContentManager.tsx",
+      "description": "Manage social media content",
+      "children": []
+    },
+    "Analytics": {
+      "type": "Feature Module",
+      "file": "frontend/web/components/Analytics.tsx",
+      "description": "Analytics and metrics dashboard",
+      "children": []
+    },
+    "Scheduler": {
+      "type": "Feature Module",
+      "file": "frontend/web/components/Scheduler.tsx",
+      "description": "Content scheduling interface",
+      "children": []
+    },
+    "AuthPages": {
+      "type": "Auth Flow",
+      "file": "frontend/web/app/auth/",
+      "description": "Authentication related pages",
+      "children": ["LoginPage", "RegisterPage"]
+    },
+    "LoginPage": {
+      "type": "Page",
+      "file": "frontend/web/app/auth/login/page.tsx",
+      "description": "User login page",
+      "children": ["LoginForm"]
+    },
+    "LoginForm": {
+      "type": "Form Component",
+      "file": "frontend/web/components/LoginForm.tsx",
+      "description": "Login form with validation",
+      "children": []
+    },
+    "RegisterPage": {
+      "type": "Page",
+      "file": "frontend/web/app/auth/register/page.tsx",
+      "description": "User registration page",
+      "children": ["RegisterForm"]
+    },
+    "RegisterForm": {
+      "type": "Form Component",
+      "file": "frontend/web/components/RegisterForm.tsx",
+      "description": "Registration form with validation",
+      "children": []
+    },
+    "TestPages": {
+      "type": "Developer Tools",
+      "file": "frontend/web/app/test/",
+      "description": "Development and testing pages",
+      "children": ["MermaidTestPage", "ComponentTreePage"]
+    },
+    "MermaidTestPage": {
+      "type": "Test Page",
+      "file": "frontend/web/app/test/mermaid/page.tsx",
+      "description": "Mermaid diagram visualization examples",
+      "children": ["MermaidDiagram"]
+    },
+    "MermaidDiagram": {
+      "type": "Utility Component",
+      "file": "frontend/web/components/MermaidDiagram.tsx",
+      "description": "Renders Mermaid diagrams from text",
+      "children": []
+    },
+    "ComponentTreePage": {
+      "type": "Test Page",
+      "file": "frontend/web/app/test/component-tree/page.tsx",
+      "description": "Interactive component tree visualization",
+      "children": []
+    },
+    "Footer": {
+      "type": "Footer Component",
+      "file": "frontend/web/components/Footer.tsx",
+      "description": "Site footer with links and info",
+      "children": []
+    }
+  },
+  "metadata": {
+    "totalComponents": 31,
+    "rootComponent": "App",
+    "maxDepth": 5,
+    "notes": [
+      "This file is manually maintained - update when adding new components",
+      "Component relationships are based on logical parent-child structure",
+      "File paths are relative to project root",
+      "Some components may not exist yet but are planned in the architecture"
+    ]
+  }
+}
