@@ -46,35 +46,35 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Navigation Links */}
-          <div className="flex items-center gap-6">
-            <Link
-              href="/"
-              className="flex items-center gap-2 group"
-            >
-              <Logo size={32} className="transition-transform group-hover:scale-110" />
-              <span className="text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">
-                ConQ
-              </span>
-            </Link>
-            <div className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-foreground/80 hover:text-foreground hover:bg-accent/10'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </div>
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 group"
+          >
+            <Logo size={32} className="transition-transform group-hover:scale-110" />
+            <span className="text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">
+              ConQ
+            </span>
+          </Link>
+
+          {/* Centered Navigation Links */}
+          <div className="hidden md:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-foreground/80 hover:text-foreground hover:bg-accent/10'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right side: Theme Selector & Profile Dropdown */}
