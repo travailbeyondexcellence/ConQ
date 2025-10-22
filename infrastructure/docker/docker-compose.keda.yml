@@ -1,0 +1,201 @@
+# Docker Compose for ConQ with KEDA Support
+# This configuration includes KEDA metrics endpoints for local testing
+
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build:
+      context: ../../backend/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - AUTH_SERVICE_ADDR=auth-service:50051
+      - USER_SERVICE_ADDR=user-service:50052
+      - CONTENT_SERVICE_ADDR=content-service:50053
+      - SCHEDULER_SERVICE_ADDR=scheduler-service:50054
+      - PUBLISHER_SERVICE_ADDR=publisher-service:50055
+    networks:
+      - conq-network
+    depends_on:
+      - auth-service
+      - user-service
+    labels:
+      - "keda.autoscaling=false"  # API Gateway doesn't need autoscaling
+
+  # Auth Service with KEDA metrics
+  auth-service:
+    build:
+      context: ../../backend/services/auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+      - "9090:9090"  # Prometheus metrics for KEDA
+    environment:
+      - PORT=50051
+      - METRICS_PORT=9090
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/conq
+      - REDIS_URI=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+      - JWT_SECRET=dev-secret-key
+    networks:
+      - conq-network
+    depends_on:
+      - mongodb
+      - redis
+      - nats
+    labels:
+      - "keda.autoscaling=true"
+      - "keda.min-replicas=1"
+      - "keda.max-replicas=5"
+
+  # Scheduler Service with KEDA metrics
+  scheduler-service:
+    build:
+      context: ../../backend/services/scheduler-service
+      dockerfile: Dockerfile
+    ports:
+      - "50054:50054"
+      - "9093:9093"  # Prometheus metrics for KEDA
+    environment:
+      - PORT=50054
+      - METRICS_PORT=9093
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/conq
+      - REDIS_URI=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+    networks:
+      - conq-network
+    depends_on:
+      - mongodb
+      - redis
+      - nats
+    labels:
+      - "keda.autoscaling=true"
+      - "keda.min-replicas=1"
+      - "keda.max-replicas=10"
+      - "keda.scale-metric=nats-queue"
+
+  # Publisher Service with KEDA metrics
+  publisher-service:
+    build:
+      context: ../../backend/services/publisher-service
+      dockerfile: Dockerfile
+    ports:
+      - "50055:50055"
+      - "9094:9094"  # Prometheus metrics for KEDA
+    environment:
+      - PORT=50055
+      - METRICS_PORT=9094
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/conq
+      - REDIS_URI=redis://redis:6379
+      - NATS_URL=nats://nats:4222
+    networks:
+      - conq-network
+    depends_on:
+      - mongodb
+      - redis
+      - nats
+    labels:
+      - "keda.autoscaling=true"
+      - "keda.min-replicas=1"
+      - "keda.max-replicas=20"
+      - "keda.scale-metric=redis-queue"
+
+  # User Service (example without autoscaling)
+  user-service:
+    build:
+      context: ../../backend/services/user-service
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      - PORT=50052
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/conq
+      - REDIS_URI=redis://redis:6379
+    networks:
+      - conq-network
+    depends_on:
+      - mongodb
+      - redis
+    labels:
+      - "keda.autoscaling=false"
+
+  # Infrastructure Services
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=conq
+    volumes:
+      - mongodb-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - conq-network
+
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass password
+    volumes:
+      - redis-data:/data
+    networks:
+      - conq-network
+
+  nats:
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"   # Client connections
+      - "8222:8222"   # HTTP monitoring
+      - "6222:6222"   # Cluster routing
+    command:
+      - "--js"        # Enable JetStream
+      - "--sd"        # Enable system account
+      - "--monitor_port=8222"
+    volumes:
+      - nats-data:/data
+    networks:
+      - conq-network
+
+  # MinIO (S3-compatible storage)
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - conq-network
+
+  # KEDA Metrics Server (for local testing)
+  keda-metrics-mock:
+    image: mockserver/mockserver:latest
+    ports:
+      - "8081:1080"
+    environment:
+      - MOCKSERVER_INITIALIZATION_JSON_PATH=/config/keda-metrics.json
+    volumes:
+      - ./keda-metrics-mock.json:/config/keda-metrics.json:ro
+    networks:
+      - conq-network
+
+networks:
+  conq-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
+  redis-data:
+  nats-data:
+  minio-data:

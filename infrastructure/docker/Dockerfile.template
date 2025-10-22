@@ -1,0 +1,63 @@
+# Multi-stage Dockerfile template for Go microservices
+# Usage: Copy this file to service directory and set SERVICE_NAME
+
+# Build stage
+FROM golang:1.21-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache git make gcc musl-dev
+
+# Set working directory
+WORKDIR /build
+
+# Copy go mod files from workspace root
+COPY go.work* ./
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy service source code
+# Note: Adjust paths based on service location
+COPY . .
+
+# Build the service
+# Replace SERVICE_NAME with actual service directory name
+ARG SERVICE_NAME
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o service ./services/${SERVICE_NAME}
+
+# Runtime stage
+FROM alpine:3.18
+
+# Install runtime dependencies
+RUN apk --no-cache add ca-certificates tzdata
+
+# Create non-root user
+RUN addgroup -g 1000 conq && \
+    adduser -D -u 1000 -G conq conq
+
+# Set working directory
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /build/service /app/service
+RUN chmod +x /app/service
+
+# Copy any config files if needed
+# COPY --from=builder /build/config /app/config
+
+# Change ownership to non-root user
+RUN chown -R conq:conq /app
+
+# Switch to non-root user
+USER conq
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
+
+# Expose service port (adjust based on service)
+EXPOSE ${PORT:-8080}
+
+# Run the service
+ENTRYPOINT ["/app/service"]

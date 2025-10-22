@@ -1,0 +1,83 @@
+# KEDA ScaledObject for Publisher Service
+# Scales based on publishing queue depth and platform API rate limits
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: publisher-service-scaler
+  namespace: conq
+spec:
+  scaleTargetRef:
+    name: publisher-service
+  pollingInterval: 15        # Check every 15 seconds (bursty workload)
+  cooldownPeriod: 180        # 3 minutes cooldown
+  minReplicaCount: 1
+  maxReplicaCount: 20        # Higher max for burst handling
+
+  triggers:
+  # Scale based on NATS publishing queue
+  - type: nats-jetstream
+    metadata:
+      account: "$G"
+      stream: "PUBLISHER"
+      consumer: "publisher-consumer"
+      lagThreshold: "25"           # Scale at 25 messages lag
+      activationLagThreshold: "3"   # Activate at 3 messages
+    authenticationRef:
+      name: nats-trigger-auth
+
+  # Scale based on Redis publishing queue
+  - type: redis
+    metadata:
+      listName: "publishing:queue"
+      listLength: "10"              # Scale when queue > 10
+      activationListLength: "2"     # Activate when queue > 2
+      address: "redis:6379"
+      database: "0"
+    authenticationRef:
+      name: redis-trigger-auth
+
+  # Scale based on pending publish tasks in MongoDB
+  - type: mongodb
+    metadata:
+      dbName: "conq"
+      collection: "publish_tasks"
+      query: '{"status": "pending", "priority": "high"}'
+      queryValue: "5"               # Scale at 5 high priority tasks
+      activationQueryValue: "1"     # Activate at 1 high priority task
+      connectionStringFromEnv: "MONGO_URI"
+    authenticationRef:
+      name: mongodb-trigger-auth
+
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 30    # Fast scale up for bursts
+          policies:
+          - type: Percent
+            value: 200                       # Triple replicas
+            periodSeconds: 30
+          - type: Pods
+            value: 5                         # Or add 5 pods
+            periodSeconds: 30
+          selectPolicy: Max
+        scaleDown:
+          stabilizationWindowSeconds: 300   # Slower scale down
+          policies:
+          - type: Percent
+            value: 25                        # Remove 25% of pods
+            periodSeconds: 60
+          - type: Pods
+            value: 2                         # Or remove 2 pods
+            periodSeconds: 60
+          selectPolicy: Min
+
+---
+# Priority class for publisher pods
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: publisher-high-priority
+value: 1000
+globalDefault: false
+description: "High priority for publisher service pods during burst periods"
