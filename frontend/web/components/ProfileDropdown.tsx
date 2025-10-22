@@ -183,13 +183,19 @@ export default function ProfileDropdown() {
           </div>
 
           {/* Menu Items */}
-          <div className="py-2">
+          <div className="py-2 px-2">
             {menuItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-card-foreground hover:bg-accent/10 transition-colors"
+                className="flex items-center gap-3 px-3 py-2.5 text-sm text-card-foreground rounded-lg transition-all duration-200"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(var(--accent) / 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
               >
                 <span className="text-muted-foreground">{item.icon}</span>
                 <span className="font-medium">{item.label}</span>
@@ -198,10 +204,16 @@ export default function ProfileDropdown() {
           </div>
 
           {/* Sign Out Section */}
-          <div className="border-t">
+          <div className="border-t p-2">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 text-sm text-destructive hover:bg-destructive/10 transition-colors font-medium"
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-destructive rounded-lg transition-all duration-200 font-medium"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(var(--destructive) / 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

@@ -106,11 +106,29 @@ export default function DashboardNavbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-foreground/80 hover:text-foreground hover:bg-accent/10'
+                      ? 'text-primary-foreground shadow-md'
+                      : 'text-foreground/80 hover:text-foreground'
                   }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: 'rgb(var(--primary))',
+                          boxShadow: '0 2px 8px rgb(var(--primary) / 0.25)',
+                        }
+                      : undefined
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgb(var(--accent) / 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <span className={isActive ? 'text-primary-foreground' : 'text-muted-foreground'}>
                     {link.icon}
@@ -152,7 +170,7 @@ export default function DashboardNavbar() {
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div
-            className="lg:hidden border-t py-4 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200"
+            className="lg:hidden border-t py-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {navLinks.map((link) => {
@@ -161,11 +179,29 @@ export default function DashboardNavbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-foreground/80 hover:text-foreground hover:bg-accent/10'
+                      ? 'text-primary-foreground shadow-md'
+                      : 'text-foreground/80 hover:text-foreground'
                   }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: 'rgb(var(--primary))',
+                          boxShadow: '0 2px 8px rgb(var(--primary) / 0.25)',
+                        }
+                      : undefined
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgb(var(--accent) / 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <span className={isActive ? 'text-primary-foreground' : 'text-muted-foreground'}>
                     {link.icon}

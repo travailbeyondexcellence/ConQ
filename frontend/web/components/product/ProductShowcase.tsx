@@ -65,25 +65,53 @@ export default function ProductShowcase() {
 
           {/* Tab navigation */}
           <motion.div
-            className="mb-8 flex flex-wrap justify-center gap-4"
+            className="mb-8 flex flex-wrap justify-center gap-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VIEWPORT}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {showcaseItems.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(index)}
-                className={`rounded-lg border px-6 py-3 font-semibold transition-all ${
-                  activeTab === index
-                    ? 'border-primary bg-primary text-primary-foreground shadow-lg'
-                    : 'border-border bg-card hover:border-primary/50 hover:shadow-md'
-                }`}
-              >
-                {item.title}
-              </button>
-            ))}
+            {showcaseItems.map((item, index) => {
+              const isActive = activeTab === index;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(index)}
+                  className={`rounded-xl px-6 py-3 font-semibold transition-all duration-200 ${
+                    isActive
+                      ? 'text-primary-foreground shadow-lg scale-105'
+                      : 'text-foreground/80 hover:text-foreground'
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: 'rgb(var(--primary))',
+                          boxShadow: '0 4px 12px rgb(var(--primary) / 0.35)',
+                        }
+                      : {
+                          backgroundColor: 'rgb(var(--card))',
+                          border: '1px solid rgb(var(--border))',
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgb(var(--accent) / 0.15)';
+                      e.currentTarget.style.borderColor = 'rgb(var(--primary) / 0.5)';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgb(var(--card))';
+                      e.currentTarget.style.borderColor = 'rgb(var(--border))';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  }}
+                >
+                  {item.title}
+                </button>
+              );
+            })}
           </motion.div>
 
           {/* Content display */}

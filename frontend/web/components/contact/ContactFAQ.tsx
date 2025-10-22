@@ -63,56 +63,81 @@ export default function ContactFAQ() {
 
             {/* FAQ list */}
             <motion.div variants={staggerContainer} className="space-y-4">
-              {faqs.map((faq, index) => (
-                <motion.div
-                  key={index}
-                  variants={staggerItem}
-                  className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all hover:shadow-md"
-                >
-                  <button
-                    onClick={() => toggleFAQ(index)}
-                    className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-muted/5"
+              {faqs.map((faq, index) => {
+                const isOpen = openIndex === index;
+                return (
+                  <motion.div
+                    key={index}
+                    variants={staggerItem}
+                    className="overflow-hidden rounded-xl border-2 shadow-sm transition-all duration-200"
+                    style={{
+                      borderColor: isOpen ? 'rgb(var(--primary))' : 'rgb(var(--border))',
+                      backgroundColor: 'rgb(var(--card))',
+                      boxShadow: isOpen ? '0 4px 12px rgb(var(--primary) / 0.2)' : '0 1px 3px rgb(0 0 0 / 0.05)',
+                    }}
                   >
-                    <span className="pr-8 text-lg font-semibold">{faq.question}</span>
-                    <motion.span
-                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
-                      animate={{ rotate: openIndex === index ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
+                    <button
+                      onClick={() => toggleFAQ(index)}
+                      className="flex w-full items-center justify-between p-6 text-left transition-all duration-200"
+                      style={{
+                        backgroundColor: isOpen ? 'rgb(var(--primary) / 0.05)' : 'transparent',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isOpen) {
+                          e.currentTarget.style.backgroundColor = 'rgb(var(--accent) / 0.05)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isOpen) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <span className="pr-8 text-lg font-semibold">{faq.question}</span>
+                      <motion.span
+                        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors"
+                        style={{
+                          backgroundColor: isOpen ? 'rgb(var(--primary))' : 'rgb(var(--primary) / 0.1)',
+                          color: isOpen ? 'rgb(var(--primary-foreground))' : 'rgb(var(--primary))',
+                        }}
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
                       >
-                        <path
-                          d="M4 6L8 10L12 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </motion.span>
-                  </button>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M4 6L8 10L12 6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </motion.span>
+                    </button>
 
-                  <AnimatePresence>
-                    {openIndex === index && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      >
-                        <div className="border-t border-border px-6 pb-6 pt-4">
-                          <p className="text-muted-foreground">{faq.answer}</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        >
+                          <div className="border-t border-border px-6 pb-6 pt-4">
+                            <p className="text-muted-foreground">{faq.answer}</p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             {/* Still have questions CTA */}
