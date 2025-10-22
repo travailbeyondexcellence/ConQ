@@ -1,0 +1,101 @@
+{
+  "colorDefinitions": {
+    "_comment": "Each theme needs these color values defined",
+    "required": [
+      "background",
+      "foreground",
+      "card",
+      "cardForeground",
+      "primary",
+      "primaryForeground",
+      "secondary",
+      "secondaryForeground",
+      "accent",
+      "accentForeground",
+      "muted",
+      "mutedForeground",
+      "border",
+      "selection",
+      "link",
+      "linkHover",
+      "destructive",
+      "destructiveForeground",
+      "success",
+      "successForeground",
+      "warning",
+      "warningForeground"
+    ]
+  },
+  "themes": {
+    "emerald": {
+      "name": "🌿 Emerald",
+      "description": "Fresh green, perfect for daytime reading",
+      "order": 1,
+      "colors": {
+        "background": "#eafff2",
+        "foreground": "#09090b",
+        "card": "#e6ffe8",
+        "cardForeground": "#18181b",
+        "primary": "#059669",
+        "primaryForeground": "#ffffff",
+        "secondary": "#10b981",
+        "secondaryForeground": "#ffffff",
+        "accent": "#34d399",
+        "accentForeground": "#022c22",
+        "muted": "#d4ffd8",
+        "mutedForeground": "#6b7280",
+        "border": "#c3ffc8",
+        "selection": "#a7f3d0",
+        "link": "#059669",
+        "linkHover": "#047857",
+        "destructive": "#dc2626",
+        "destructiveForeground": "#ffffff",
+        "success": "#059669",
+        "successForeground": "#ffffff",
+        "warning": "#d97706",
+        "warningForeground": "#ffffff"
+      },
+      "progressGradient": {
+        "from": "#10b981",
+        "to": "#059669"
+      },
+      "recentEditColor": "#fef08a",
+      "recentEditOpacity": 0.3
+    },
+    "midnight": {
+      "name": "🌙 Midnight",
+      "description": "Deep purple/indigo for late night sessions",
+      "order": 2,
+      "colors": {
+        "background": "#020617",
+        "foreground": "#f1f5f9",
+        "card": "#0f172a",
+        "cardForeground": "#e2e8f0",
+        "primary": "#7c3aed",
+        "primaryForeground": "#ffffff",
+        "secondary": "#6366f1",
+        "secondaryForeground": "#ffffff",
+        "accent": "#8b5cf6",
+        "accentForeground": "#f3e8ff",
+        "muted": "#1e293b",
+        "mutedForeground": "#94a3b8",
+        "border": "#334155",
+        "selection": "#4c1d95",
+        "link": "#a78bfa",
+        "linkHover": "#c4b5fd",
+        "destructive": "#ef4444",
+        "destructiveForeground": "#ffffff",
+        "success": "#22c55e",
+        "successForeground": "#000000",
+        "warning": "#f59e0b",
+        "warningForeground": "#000000"
+      },
+      "progressGradient": {
+        "from": "#8b5cf6",
+        "to": "#6366f1"
+      },
+      "recentEditColor": "#c084fc",
+      "recentEditOpacity": 0.3
+    }
+  }
+}
