@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"net"
 	"os"
 	"os/signal"
@@ -12,6 +11,7 @@ import (
 	"github.com/conq/backend/services/auth-service/handlers"
 	"github.com/conq/backend/services/auth-service/service"
 	sharedConfig "github.com/conq/backend/shared/config"
+	pb "github.com/conq/backend/shared/proto"
 	"github.com/conq/backend/shared/utils"
 	"google.golang.org/grpc"
 )
@@ -54,6 +54,7 @@ func main() {
 	// Initialize service
 	authService := service.NewAuthService(db, natsConn, cfg.JWTSecret, cfg.JWTExpiry)
 	authHandler := handlers.NewAuthHandler(authService)
+	grpcHandler := handlers.NewGRPCAuthHandler(authHandler)
 
 	// Create gRPC server
 	grpcServer := grpc.NewServer(
@@ -64,7 +65,7 @@ func main() {
 	)
 
 	// Register gRPC service
-	// pb.RegisterAuthServiceServer(grpcServer, authHandler)
+	pb.RegisterAuthServiceServer(grpcServer, grpcHandler)
 
 	// Start gRPC server
 	lis, err := net.Listen("tcp", ":"+cfg.GRPCPort)
