@@ -2,29 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
-interface ProfileDropdownProps {
-  user?: {
-    name: string;
-    email: string;
-    avatar?: string;
-    role?: string;
-  };
-}
-
-export default function ProfileDropdown({ user }: ProfileDropdownProps) {
+export default function ProfileDropdown() {
+  const router = useRouter();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Default user data if none provided
-  const defaultUser = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    role: 'User',
-    avatar: undefined,
-  };
-
-  const currentUser = user || defaultUser;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -61,6 +46,30 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Handle logout
+  const handleLogout = async () => {
+    setIsOpen(false);
+    await logout();
+    router.push('/');
+  };
+
+  // If not authenticated, show login button
+  if (!isAuthenticated) {
+    return (
+      <Link
+        href="/login"
+        className="px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
+      >
+        Log In
+      </Link>
+    );
+  }
+
+  // If no user data yet (loading), show nothing
+  if (!user) {
+    return null;
+  }
 
   const menuItems = [
     {
@@ -113,20 +122,20 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
       >
         {/* Avatar */}
         <div className="relative w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold overflow-hidden border-2 border-primary/20">
-          {currentUser.avatar ? (
+          {user.avatar ? (
             <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
+              src={user.avatar}
+              alt={user.name}
               className="w-full h-full object-cover"
             />
           ) : (
-            <span>{getInitials(currentUser.name)}</span>
+            <span>{getInitials(user.name)}</span>
           )}
         </div>
 
         {/* User Name (hidden on mobile) */}
         <span className="hidden sm:inline text-sm font-medium text-foreground">
-          {currentUser.name}
+          {user.name}
         </span>
 
         {/* Chevron Icon */}
@@ -147,26 +156,26 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
           <div className="p-4 border-b bg-muted/50">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-base font-semibold overflow-hidden border-2 border-primary/20">
-                {currentUser.avatar ? (
+                {user.avatar ? (
                   <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
+                    src={user.avatar}
+                    alt={user.name}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span>{getInitials(currentUser.name)}</span>
+                  <span>{getInitials(user.name)}</span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">
-                  {currentUser.name}
+                  {user.name}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {currentUser.email}
+                  {user.email}
                 </p>
-                {currentUser.role && (
+                {user.role && (
                   <p className="text-xs text-primary font-medium mt-0.5">
-                    {currentUser.role}
+                    {user.role}
                   </p>
                 )}
               </div>
@@ -191,11 +200,7 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
           {/* Sign Out Section */}
           <div className="border-t">
             <button
-              onClick={() => {
-                setIsOpen(false);
-                // Add sign out logic here
-                console.log('Sign out clicked');
-              }}
+              onClick={handleLogout}
               className="flex items-center gap-3 w-full px-4 py-3 text-sm text-destructive hover:bg-destructive/10 transition-colors font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
