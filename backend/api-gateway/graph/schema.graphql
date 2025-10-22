@@ -1,0 +1,96 @@
+scalar Time
+
+# Authentication Types
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  avatar: String
+  role: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type AuthResponse {
+  token: String!
+  refreshToken: String!
+  user: User!
+}
+
+type TokenValidationResponse {
+  valid: Boolean!
+  user: User
+  message: String
+}
+
+# Input Types
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RefreshTokenInput {
+  refreshToken: String!
+}
+
+input ForgotPasswordInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  token: String!
+  newPassword: String!
+}
+
+input ChangePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+}
+
+# Queries
+type Query {
+  # Get current user info (requires auth token)
+  me: User!
+
+  # Validate token
+  validateToken(token: String!): TokenValidationResponse!
+
+  # Health check
+  health: String!
+}
+
+# Mutations
+type Mutation {
+  # User registration
+  register(input: RegisterInput!): AuthResponse!
+
+  # User login
+  login(input: LoginInput!): AuthResponse!
+
+  # User logout (blacklist token)
+  logout: Boolean!
+
+  # Refresh access token
+  refreshToken(input: RefreshTokenInput!): AuthResponse!
+
+  # Forgot password (send reset email)
+  forgotPassword(input: ForgotPasswordInput!): Boolean!
+
+  # Reset password with token
+  resetPassword(input: ResetPasswordInput!): Boolean!
+
+  # Change password (requires auth)
+  changePassword(input: ChangePasswordInput!): Boolean!
+
+  # Verify email with token
+  verifyEmail(token: String!): Boolean!
+
+  # Resend verification email
+  resendVerification: Boolean!
+}

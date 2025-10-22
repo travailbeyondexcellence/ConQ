@@ -1,0 +1,38 @@
+# gqlgen configuration file
+# See https://gqlgen.com/config/ for documentation
+
+# Where are the GraphQL schema files located? globs are supported
+schema:
+  - graph/schema.graphql
+
+# Where should the generated server code go?
+exec:
+  filename: graph/generated/generated.go
+  package: generated
+
+# Where should the GraphQL models go?
+model:
+  filename: graph/model/models_gen.go
+  package: model
+
+# Where should the resolver implementations go?
+resolver:
+  layout: follow-schema
+  dir: graph
+  package: graph
+  filename_template: "{name}.resolvers.go"
+
+# Configure model generation
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+  Time:
+    model:
+      - github.com/99designs/gqlgen/graphql.Time
+
+# Skip generation for some types if needed
+# skip_validation: false

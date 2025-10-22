@@ -1,8 +1,14 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client/react';
+import {
+  LOGIN,
+  LOGOUT,
+  VALIDATE_TOKEN
+} from '@/graphql/auth';
 
-// User type based on backend MongoDB schema
+// User type based on backend GraphQL schema
 export interface User {
   id: string;
   name: string;
@@ -26,11 +32,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Token management utilities
 const TOKEN_KEY = 'conq_auth_token';
+const REFRESH_TOKEN_KEY = 'conq_refresh_token';
 const USER_KEY = 'conq_user_data';
 
 const setToken = (token: string) => {
   if (typeof window !== 'undefined') {
     localStorage.setItem(TOKEN_KEY, token);
+  }
+};
+
+const setRefreshToken = (refreshToken: string) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   }
 };
 
@@ -41,9 +54,10 @@ const getToken = (): string | null => {
   return null;
 };
 
-const removeToken = () => {
+const removeTokens = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
   }
 };
@@ -67,6 +81,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // GraphQL mutations and queries
+  const [loginMutation] = useMutation(LOGIN);
+  const [logoutMutation] = useMutation(LOGOUT);
+  const [validateToken] = useLazyQuery(VALIDATE_TOKEN);
+
   // Validate token and fetch user data on mount
   useEffect(() => {
     const initAuth = async () => {
@@ -74,25 +93,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const savedUser = getUserData();
 
       if (token && savedUser) {
-        // Validate token with backend
+        // Validate token with backend via GraphQL
         try {
-          const response = await fetch('http://localhost:8080/auth/validate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
+          const { data, error } = await validateToken({
+            variables: { token },
           });
 
-          if (response.ok) {
-            setUser(savedUser);
-          } else {
+          if (error || !data?.validateToken?.valid) {
             // Token invalid, clear storage
-            removeToken();
+            removeTokens();
+            setUser(null);
+          } else {
+            setUser(savedUser);
           }
         } catch (error) {
           console.error('Auth validation failed:', error);
-          removeToken();
+          removeTokens();
+          setUser(null);
         }
       }
 
@@ -100,45 +117,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     initAuth();
-  }, []);
+  }, [validateToken]);
 
   // Login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { data, errors } = await loginMutation({
+        variables: {
+          input: {
+            email,
+            password,
+          },
         },
-        body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Login failed');
+      if (errors || !data?.login) {
+        throw new Error(errors?.[0]?.message || 'Login failed');
       }
 
-      const data = await response.json();
+      const { token, refreshToken, user: userData } = data.login;
 
-      // Store token and user data
-      setToken(data.token);
-      const userData: User = {
-        id: data.user.id || data.user._id,
-        name: data.user.name,
-        email: data.user.email,
-        avatar: data.user.avatar,
-        role: data.user.role,
-      };
+      // Store tokens and user data
+      setToken(token);
+      setRefreshToken(refreshToken);
       setUserData(userData);
       setUser(userData);
     } catch (error) {
       console.error('Login error:', error);
       // Provide more user-friendly error messages
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        throw new Error('Unable to connect to server. Please ensure the backend is running.');
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          throw new Error('Unable to connect to server. Please ensure the backend is running.');
+        }
+        throw error;
       }
-      throw error;
+      throw new Error('Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -148,19 +162,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     setIsLoading(true);
     try {
-      const token = getToken();
-      if (token) {
-        // Call backend logout (will blacklist token)
-        await fetch('http://localhost:8080/auth/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }).catch(err => console.error('Logout API call failed:', err));
-      }
+      // Call backend logout (will blacklist token)
+      await logoutMutation().catch(err =>
+        console.error('Logout API call failed:', err)
+      );
     } finally {
       // Always clear local state regardless of API call result
-      removeToken();
+      removeTokens();
       setUser(null);
       setIsLoading(false);
     }
@@ -173,22 +181,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (token && savedUser) {
       try {
-        const response = await fetch('http://localhost:8080/auth/validate', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+        const { data, error } = await validateToken({
+          variables: { token },
         });
 
-        if (response.ok) {
-          setUser(savedUser);
-        } else {
-          removeToken();
+        if (error || !data?.validateToken?.valid) {
+          removeTokens();
           setUser(null);
+        } else {
+          setUser(savedUser);
         }
       } catch (error) {
         console.error('Token validation failed:', error);
-        removeToken();
+        removeTokens();
         setUser(null);
       }
     }

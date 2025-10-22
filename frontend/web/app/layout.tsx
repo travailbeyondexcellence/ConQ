@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import ThemeScript from "./theme-script";
 import Navbar from "@/components/Navbar";
-import { AuthProvider } from "@/context/AuthContext";
+import { Providers } from "./providers";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Conq - Social Media Content Pipeline Manager",
   description: "Manage, schedule, and publish your social media content across multiple platforms",
 };
@@ -20,10 +19,10 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body className="antialiased">
-        <AuthProvider>
+        <Providers>
           <Navbar />
           {children}
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

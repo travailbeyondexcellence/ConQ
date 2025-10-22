@@ -5,6 +5,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/conq/backend/api-gateway/client"
+	"github.com/conq/backend/api-gateway/graph"
+	"github.com/conq/backend/api-gateway/graph/generated"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
@@ -15,6 +20,32 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+
+	// Get auth service address from env or use default
+	authServiceAddr := os.Getenv("AUTH_SERVICE_ADDR")
+	if authServiceAddr == "" {
+		authServiceAddr = "localhost:50051"
+	}
+
+	// Initialize gRPC clients
+	log.Printf("Connecting to auth service at %s", authServiceAddr)
+	authClient, err := client.NewAuthClient(authServiceAddr)
+	if err != nil {
+		log.Fatalf("Failed to create auth client: %v", err)
+	}
+	defer authClient.Close()
+
+	log.Println("Successfully connected to auth service")
+
+	// Create GraphQL resolver with dependencies
+	resolver := &graph.Resolver{
+		AuthClient: authClient,
+	}
+
+	// Create GraphQL server
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
+		Resolvers: resolver,
+	}))
 
 	r := chi.NewRouter()
 
@@ -34,11 +65,11 @@ func main() {
 	})
 
 	// Apply CORS
-	handler := corsHandler.Handler(r)
+	httpHandler := corsHandler.Handler(r)
 
 	// Routes
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Conq API Gateway"))
+		w.Write([]byte("Conq API Gateway with GraphQL"))
 	})
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -46,11 +77,15 @@ func main() {
 		w.Write([]byte(`{"status":"healthy"}`))
 	})
 
-	// GraphQL endpoint will be added here
-	// r.Handle("/graphql", graphqlHandler())
+	// GraphQL endpoints
+	r.Handle("/graphql", srv)
+	r.Handle("/playground", playground.Handler("GraphQL Playground", "/graphql"))
 
 	log.Printf("API Gateway starting on port %s", port)
-	if err := http.ListenAndServe(":"+port, handler); err != nil {
+	log.Printf("GraphQL Playground: http://localhost:%s/playground", port)
+	log.Printf("GraphQL Endpoint: http://localhost:%s/graphql", port)
+
+	if err := http.ListenAndServe(":"+port, httpHandler); err != nil {
 		log.Fatal(err)
 	}
 }

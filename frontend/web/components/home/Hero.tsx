@@ -10,8 +10,24 @@ export default function Hero() {
       initial="hidden"
       animate="visible"
     >
-      {/* Background gradient effect */}
+      {/* Background with Unsplash image and theme-aware overlay */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
+        {/* Layer 1: Background Image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1920&q=80&fm=webp&fit=crop)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Layer 2: Theme-aware overlay */}
+        <div className="absolute inset-0 bg-background/90" aria-hidden="true" />
+
+        {/* Layer 3: Gradient accent blobs */}
         <motion.div
           className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
           initial={{ opacity: 0, scale: 0.8 }}

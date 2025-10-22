@@ -6,8 +6,24 @@ import { VIEWPORT } from '@/lib/animations';
 export default function ProductHero() {
   return (
     <section className="relative overflow-hidden py-20 md:py-32">
-      {/* Background decoration */}
+      {/* Background with Unsplash image and theme-aware overlay */}
       <div className="absolute inset-0 -z-10">
+        {/* Layer 1: Background Image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1920&q=80&fm=webp&fit=crop)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Layer 2: Theme-aware overlay */}
+        <div className="absolute inset-0 bg-background/90" aria-hidden="true" />
+
+        {/* Layer 3: Gradient accent blobs */}
         <div className="absolute right-0 top-0 h-[800px] w-[800px] rounded-full bg-primary/5 blur-3xl"></div>
         <div className="absolute left-0 bottom-0 h-[600px] w-[600px] rounded-full bg-accent/5 blur-3xl"></div>
       </div>
@@ -36,7 +52,7 @@ export default function ProductHero() {
               </motion.div>
 
               {/* Title */}
-              <h1 className="mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl">
+              <h1 className="mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl">
                 Transform Your Content Creation
               </h1>
 

@@ -12,8 +12,24 @@ interface ContactHeroProps {
 export default function ContactHero({ title, subtitle, description }: ContactHeroProps) {
   return (
     <section className="relative overflow-hidden py-20 md:py-32">
-      {/* Background decoration */}
+      {/* Background with Unsplash image and theme-aware overlay */}
       <div className="absolute inset-0 -z-10">
+        {/* Layer 1: Background Image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1920&q=80&fm=webp&fit=crop)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Layer 2: Theme-aware overlay */}
+        <div className="absolute inset-0 bg-background/90" aria-hidden="true" />
+
+        {/* Layer 3: Gradient accent blobs */}
         <div className="absolute right-0 top-0 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl"></div>
         <div className="absolute left-0 bottom-0 h-[400px] w-[400px] rounded-full bg-accent/5 blur-3xl"></div>
       </div>
@@ -36,7 +52,7 @@ export default function ContactHero({ title, subtitle, description }: ContactHer
 
           {/* Title */}
           <motion.h1
-            className="mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl"
+            className="mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
