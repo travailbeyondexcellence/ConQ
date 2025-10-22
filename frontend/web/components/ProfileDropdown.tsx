@@ -142,7 +142,7 @@ export default function ProfileDropdown({ user }: ProfileDropdownProps) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-card shadow-lg overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-64 rounded-lg border shadow-lg overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200" style={{ backgroundColor: 'rgb(var(--card))' }}>
           {/* User Info Section */}
           <div className="p-4 border-b bg-muted/50">
             <div className="flex items-center gap-3">

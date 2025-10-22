@@ -71,7 +71,8 @@ export default function ThemeSelector() {
               transition={{ duration: 0.15 }}
             />
             <motion.div
-              className="absolute right-0 top-full mt-2 w-96 bg-card border border-border rounded-2xl shadow-lg z-50 p-4"
+              className="absolute right-0 top-full mt-2 w-96 border border-border rounded-2xl shadow-lg z-50 p-4"
+              style={{ backgroundColor: 'rgb(var(--card))' }}
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
