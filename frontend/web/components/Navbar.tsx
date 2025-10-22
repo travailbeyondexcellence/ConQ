@@ -6,6 +6,7 @@ import { useTheme, type ThemeKey } from '@/hooks/useTheme';
 import { getAllThemes } from '@/lib/theme-utils';
 import { useState, useEffect, useRef } from 'react';
 import ProfileDropdown from './ProfileDropdown';
+import Logo from './Logo';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -49,9 +50,12 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <Link
               href="/"
-              className="text-xl font-bold text-primary hover:text-primary/80 transition-colors"
+              className="flex items-center gap-2 group"
             >
-              ConQ
+              <Logo size={32} className="transition-transform group-hover:scale-110" />
+              <span className="text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">
+                ConQ
+              </span>
             </Link>
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => {
