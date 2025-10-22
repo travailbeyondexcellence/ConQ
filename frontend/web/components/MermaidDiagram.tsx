@@ -8,13 +8,11 @@ interface MermaidDiagramProps {
   className?: string;
 }
 
-// Track if Mermaid has been initialized globally
-let mermaidInitialized = false;
-
 export default function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>('');
   const idRef = useRef(`mermaid-${Math.random().toString(36).substring(7)}`);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
     // Get computed CSS variable values from the DOM
@@ -25,29 +23,55 @@ export default function MermaidDiagram({ chart, className = '' }: MermaidDiagram
       return rgbValues ? `rgb(${rgbValues})` : '#000000';
     };
 
-    // Initialize mermaid only once globally
-    if (!mermaidInitialized) {
-      mermaid.initialize({
-        startOnLoad: false,
-        theme: 'base',
-        themeVariables: {
-          primaryColor: getComputedColor('--primary'),
-          primaryTextColor: getComputedColor('--primary-foreground'),
-          primaryBorderColor: getComputedColor('--border'),
-          lineColor: getComputedColor('--border'),
-          secondaryColor: getComputedColor('--secondary'),
-          tertiaryColor: getComputedColor('--muted'),
-          background: getComputedColor('--background'),
-          mainBkg: getComputedColor('--card'),
-          secondBkg: getComputedColor('--muted'),
-          textColor: getComputedColor('--foreground'),
-          border1: getComputedColor('--border'),
-          border2: getComputedColor('--border'),
-          fontSize: '16px',
-        },
-      });
-      mermaidInitialized = true;
-    }
+    // Initialize mermaid with current theme colors
+    const primaryColor = getComputedColor('--primary');
+    const foregroundColor = getComputedColor('--foreground');
+    const borderColor = getComputedColor('--border');
+
+    // Always reinitialize to pick up theme changes
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        // Node colors
+        primaryColor: primaryColor,
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: primaryColor,
+
+        // Line colors
+        lineColor: borderColor,
+
+        // Secondary elements
+        secondaryColor: getComputedColor('--secondary'),
+        secondaryTextColor: '#ffffff',
+        secondaryBorderColor: borderColor,
+
+        // Tertiary elements
+        tertiaryColor: getComputedColor('--muted'),
+        tertiaryTextColor: foregroundColor,
+        tertiaryBorderColor: borderColor,
+
+        // Background
+        background: 'transparent',
+        mainBkg: primaryColor,
+        secondBkg: getComputedColor('--secondary'),
+        tertiaryBkg: getComputedColor('--muted'),
+
+        // Text
+        textColor: foregroundColor,
+        nodeBorder: borderColor,
+        clusterBkg: getComputedColor('--card'),
+        clusterBorder: borderColor,
+
+        // Edge/Arrow colors
+        edgeLabelBackground: getComputedColor('--card'),
+
+        // Font
+        fontSize: '16px',
+        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+      },
+    });
+    initializedRef.current = true;
 
     // Render the diagram
     const renderDiagram = async () => {
