@@ -1,4 +1,4 @@
-module github.com/conq/backend/services/content-service
+module github.com/conq/backend/services/scheduler-service
 
 go 1.21
 
