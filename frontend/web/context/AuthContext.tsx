@@ -85,7 +85,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // GraphQL mutations and queries
   const [loginMutation] = useMutation(LOGIN);
-  const [registerMutation] = useMutation(REGISTER);
+  const [registerMutation] = useMutation(REGISTER, {
+    onCompleted: (data) => {
+      console.log('[AUTH] Mutation onCompleted:', data);
+    },
+    onError: (error) => {
+      console.error('[AUTH] Mutation onError:', error);
+      console.error('[AUTH] Error details:', {
+        message: error.message,
+        networkError: error.networkError,
+        graphQLErrors: error.graphQLErrors,
+      });
+    },
+  });
   const [logoutMutation] = useMutation(LOGOUT);
   const [validateToken] = useLazyQuery(VALIDATE_TOKEN);
 
@@ -163,8 +175,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Register function
   const register = async (name: string, email: string, password: string) => {
+    console.log('[AUTH] register function called with:', { name, email });
     setIsLoading(true);
     try {
+      console.log('[AUTH] Executing registerMutation with Apollo Client');
+      console.log('[AUTH] GraphQL URL:', process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/graphql');
+
       const { data, errors } = await registerMutation({
         variables: {
           input: {
@@ -175,21 +191,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
 
+      console.log('[AUTH] Mutation response:', { data, errors });
+
       if (errors || !data?.register) {
+        console.error('[AUTH] Registration failed with errors:', errors);
         throw new Error(errors?.[0]?.message || 'Registration failed');
       }
 
       const { token, refreshToken, user: userData } = data.register;
+      console.log('[AUTH] Registration successful, storing tokens and user data');
 
       // Store tokens and user data
       setToken(token);
       setRefreshToken(refreshToken);
       setUserData(userData);
       setUser(userData);
+      console.log('[AUTH] Tokens and user data stored successfully');
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('[AUTH] Registration error caught:', error);
+      console.error('[AUTH] Error type:', error instanceof Error ? error.constructor.name : typeof error);
       // Provide more user-friendly error messages
       if (error instanceof Error) {
+        console.error('[AUTH] Error message:', error.message);
+        console.error('[AUTH] Error stack:', error.stack);
         if (error.message.includes('fetch')) {
           throw new Error('Unable to connect to server. Please ensure the backend is running.');
         }
@@ -197,6 +221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       throw new Error('Registration failed. Please try again.');
     } finally {
+      console.log('[AUTH] Register function completed');
       setIsLoading(false);
     }
   };

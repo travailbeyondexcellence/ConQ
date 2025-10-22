@@ -114,9 +114,25 @@ test.describe('Authentication Flow', () => {
     });
 
     test('should successfully register a new user', async ({ page }) => {
+      // Listen for console logs
+      page.on('console', (msg) => {
+        console.log(`[BROWSER] ${msg.type()}: ${msg.text()}`);
+      });
+
+      // Listen for page errors
+      page.on('pageerror', (error) => {
+        console.error('[BROWSER ERROR]:', error.message);
+      });
+
       await page.goto('/signup');
 
+      // Wait for page to be fully loaded
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(1000); // Additional wait for React hydration
+
       const testUser = generateTestUser();
+
+      console.log('[TEST] Filling registration form with:', testUser);
 
       // Fill registration form
       await page.fill('input[name="name"], input#name', testUser.name);
@@ -126,14 +142,20 @@ test.describe('Authentication Flow', () => {
       await passwords.first().fill(testUser.password);
       await passwords.nth(1).fill(testUser.password);
 
+      console.log('[TEST] Form filled, submitting...');
+
       // Submit form
       await page.locator('button[type="submit"]').click();
 
+      console.log('[TEST] Form submitted, waiting for response...');
+
       // Wait for navigation or success message
-      await page.waitForTimeout(3000);
+      await page.waitForTimeout(5000); // Increased timeout
 
       // Check if redirected to dashboard or success state
       const currentUrl = page.url();
+      console.log('[TEST] Current URL after submission:', currentUrl);
+
       const isSuccessful = currentUrl.includes('/dashboard') ||
                           currentUrl.includes('/success') ||
                           await page.locator('text=/success|welcome|registered/i').isVisible().catch(() => false);
@@ -146,6 +168,12 @@ test.describe('Authentication Flow', () => {
         refreshToken: localStorage.getItem('conq_refresh_token'),
         userData: localStorage.getItem('conq_user_data'),
       }));
+
+      console.log('[TEST] Tokens in localStorage:', {
+        authToken: !!tokens.authToken,
+        refreshToken: !!tokens.refreshToken,
+        userData: !!tokens.userData
+      });
 
       if (currentUrl.includes('/dashboard')) {
         expect(tokens.authToken).toBeTruthy();

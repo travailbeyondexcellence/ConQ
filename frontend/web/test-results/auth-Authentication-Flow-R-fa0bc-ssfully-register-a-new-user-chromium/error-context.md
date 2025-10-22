@@ -20,67 +20,129 @@
       - generic [ref=e27]:
         - button "Change theme" [ref=e29]:
           - img [ref=e30]
-        - link "Log In" [ref=e32] [cursor=pointer]:
-          - /url: /login
-  - generic [ref=e33]:
-    - button "Change theme" [ref=e36]:
-      - img [ref=e37]
-    - generic [ref=e43]:
-      - generic [ref=e44]:
-        - generic [ref=e45]:
-          - link [ref=e46] [cursor=pointer]:
-            - /url: /
-            - img [ref=e47]
-          - heading "Create Account" [level=1] [ref=e62]
-          - paragraph [ref=e63]: Join ConQ and start scheduling your content
-        - generic [ref=e64]:
-          - generic [ref=e65]:
-            - generic [ref=e66]: Full Name
-            - textbox "Full Name" [ref=e67]:
-              - /placeholder: John Doe
-              - text: Test User 1761168351234
-          - generic [ref=e68]:
-            - generic [ref=e69]: Email Address
-            - textbox "Email Address" [ref=e70]:
-              - /placeholder: you@example.com
-              - text: test1761168351234@example.com
-          - generic [ref=e71]:
-            - generic [ref=e72]: Password
-            - generic [ref=e73]:
-              - textbox "Create a strong password" [ref=e74]: TestPass123!
-              - button "Show password" [ref=e75]:
-                - img [ref=e76]
-          - generic [ref=e79]:
-            - generic [ref=e80]: Confirm Password
-            - generic [ref=e81]:
-              - textbox "Re-enter your password" [ref=e82]: TestPass123!
-              - button "Show password" [ref=e83]:
-                - img [ref=e84]
-          - paragraph [ref=e88]: Registration failed
-          - button "Create Account" [ref=e89]
-        - paragraph [ref=e91]:
-          - text: Already have an account?
-          - link "Sign in" [ref=e92] [cursor=pointer]:
-            - /url: /login
-      - paragraph [ref=e93]:
-        - text: By creating an account, you agree to our
-        - link "Terms of Service" [ref=e94] [cursor=pointer]:
-          - /url: /terms
-        - text: and
-        - link "Privacy Policy" [ref=e95] [cursor=pointer]:
-          - /url: /privacy
-  - generic [ref=e100] [cursor=pointer]:
-    - button "Open Next.js Dev Tools" [ref=e101]:
-      - img [ref=e102]
-    - generic [ref=e105]:
-      - button "Open issues overlay" [ref=e106]:
-        - generic [ref=e107]:
-          - generic [ref=e108]: "1"
-          - generic [ref=e109]: "2"
-        - generic [ref=e110]:
-          - text: Issue
-          - generic [ref=e111]: s
-      - button "Collapse issues badge" [ref=e112]:
-        - img [ref=e113]
-  - alert [ref=e115]
+        - button "TU Test User 1761169536991" [ref=e33]:
+          - generic [ref=e35]: TU
+          - generic [ref=e36]: Test User 1761169536991
+          - img [ref=e37]
+  - generic [ref=e43] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e44]:
+      - img [ref=e45]
+    - generic [ref=e48]:
+      - button "Open issues overlay" [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]: "0"
+          - generic [ref=e52]: "1"
+        - generic [ref=e53]: Issue
+      - button "Collapse issues badge" [ref=e54]:
+        - img [ref=e55]
+  - alert [ref=e57]
+  - generic [ref=e58]:
+    - navigation [ref=e59]:
+      - generic [ref=e61]:
+        - link "ConQ" [ref=e62] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e63]
+          - generic [ref=e78]: ConQ
+        - generic [ref=e79]:
+          - link "Dashboard" [ref=e80] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e82]
+            - text: Dashboard
+          - link "Projects" [ref=e84] [cursor=pointer]:
+            - /url: /dashboard/projects
+            - img [ref=e86]
+            - text: Projects
+          - link "Content" [ref=e88] [cursor=pointer]:
+            - /url: /dashboard/content
+            - img [ref=e90]
+            - text: Content
+          - link "Calendar" [ref=e92] [cursor=pointer]:
+            - /url: /dashboard/calendar
+            - img [ref=e94]
+            - text: Calendar
+          - link "Analytics" [ref=e96] [cursor=pointer]:
+            - /url: /dashboard/analytics
+            - img [ref=e98]
+            - text: Analytics
+          - link "Settings" [ref=e100] [cursor=pointer]:
+            - /url: /dashboard/settings
+            - img [ref=e102]
+            - text: Settings
+        - generic [ref=e105]:
+          - button "Change theme" [ref=e107]:
+            - img [ref=e108]
+          - button "TU Test User 1761169536991" [ref=e111]:
+            - generic [ref=e113]: TU
+            - generic [ref=e114]: Test User 1761169536991
+            - img [ref=e115]
+    - main [ref=e117]:
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - heading "Good morning, John" [level=1] [ref=e120]
+          - paragraph [ref=e121]:
+            - img [ref=e122]
+            - text: 3:15 AM • Welcome back to your content dashboard
+        - generic [ref=e124]:
+          - generic [ref=e125]:
+            - paragraph [ref=e126]: Active Projects
+            - paragraph [ref=e127]: "0"
+          - generic [ref=e128]:
+            - paragraph [ref=e129]: Total Posts
+            - paragraph [ref=e130]: "0"
+          - generic [ref=e131]:
+            - paragraph [ref=e132]: Scheduled
+            - paragraph [ref=e133]: "0"
+          - generic [ref=e134]:
+            - paragraph [ref=e135]: Published
+            - paragraph [ref=e136]: "0"
+        - generic [ref=e137]:
+          - heading "Quick Actions" [level=2] [ref=e138]
+          - generic [ref=e139]:
+            - link "Create Project Start a new content project" [ref=e140] [cursor=pointer]:
+              - /url: /dashboard/projects/new
+              - generic [ref=e141]:
+                - img [ref=e143]
+                - generic [ref=e145]:
+                  - heading "Create Project" [level=3] [ref=e146]
+                  - paragraph [ref=e147]: Start a new content project
+            - link "Add Content Create new content piece" [ref=e148] [cursor=pointer]:
+              - /url: /dashboard/content/new
+              - generic [ref=e149]:
+                - img [ref=e151]
+                - generic [ref=e153]:
+                  - heading "Add Content" [level=3] [ref=e154]
+                  - paragraph [ref=e155]: Create new content piece
+            - link "View Analytics Check your performance" [ref=e156] [cursor=pointer]:
+              - /url: /dashboard/analytics
+              - generic [ref=e157]:
+                - img [ref=e159]
+                - generic [ref=e161]:
+                  - heading "View Analytics" [level=3] [ref=e162]
+                  - paragraph [ref=e163]: Check your performance
+            - link "Schedule Posts Plan your content calendar" [ref=e164] [cursor=pointer]:
+              - /url: /dashboard/calendar
+              - generic [ref=e165]:
+                - img [ref=e167]
+                - generic [ref=e169]:
+                  - heading "Schedule Posts" [level=3] [ref=e170]
+                  - paragraph [ref=e171]: Plan your content calendar
+        - generic [ref=e173]:
+          - heading "Getting Started with ConQ" [level=2] [ref=e174]
+          - paragraph [ref=e175]: "Welcome to your content management dashboard. Here's what you can do:"
+          - generic [ref=e176]:
+            - generic [ref=e177]:
+              - img [ref=e179]
+              - generic [ref=e181]:
+                - heading "Create Your First Project" [level=3] [ref=e182]
+                - paragraph [ref=e183]: Organize your content by creating projects for different campaigns or platforms.
+            - generic [ref=e184]:
+              - img [ref=e186]
+              - generic [ref=e188]:
+                - heading "Add Content" [level=3] [ref=e189]
+                - paragraph [ref=e190]: Start creating and managing your content pieces with our intuitive editor.
+            - generic [ref=e191]:
+              - img [ref=e193]
+              - generic [ref=e195]:
+                - heading "Schedule & Publish" [level=3] [ref=e196]
+                - paragraph [ref=e197]: Plan your content calendar and automate publishing across multiple platforms.
 ```

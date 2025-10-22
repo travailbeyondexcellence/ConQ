@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import React, { useState, useEffect, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function SignupPage() {
   const router = useRouter();
   const { register: registerUser, isLoading: authLoading } = useAuth();
+
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -69,25 +70,39 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
+    console.log('[SIGNUP] handleSubmit triggered');
     e.preventDefault();
 
+    console.log('[SIGNUP] Form values:', { name, email, password: '***', confirmPassword: '***' });
+
     if (!validateForm()) {
+      console.log('[SIGNUP] Form validation failed');
       return;
     }
 
+    console.log('[SIGNUP] Form validation passed, starting registration');
     setIsLoading(true);
     setErrors({});
 
     try {
+      console.log('[SIGNUP] Calling registerUser with:', { name, email });
       await registerUser(name, email, password);
+      console.log('[SIGNUP] Registration successful, redirecting to dashboard');
       // Redirect to dashboard
       router.push('/dashboard');
     } catch (error: any) {
-      console.error('Registration error:', error);
+      console.error('[SIGNUP] Registration error:', error);
+      console.error('[SIGNUP] Error details:', {
+        message: error.message,
+        stack: error.stack,
+        networkError: error.networkError,
+        graphQLErrors: error.graphQLErrors
+      });
       setErrors({
         general: error.message || 'Registration failed. Please try again.',
       });
     } finally {
+      console.log('[SIGNUP] Registration attempt finished');
       setIsLoading(false);
     }
   };

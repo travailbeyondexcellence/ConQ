@@ -5,7 +5,11 @@ import { onError } from '@apollo/client/link/error';
 const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/graphql',
   credentials: 'include',
+  fetchOptions: {
+    mode: 'cors',
+  },
 });
+
 
 // Auth link to add JWT token to requests
 const authLink = setContext((_, { headers }) => {
