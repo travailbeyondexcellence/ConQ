@@ -10,7 +10,17 @@ export default function ThemeScript() {
             // Map theme keys to CSS class names
             const themeToCssClass = {
               'emerald': 'emerald',
-              'midnight': 'midnight'
+              'emnight': 'emerald-night',
+              'celeste': 'celeste',
+              'hicon': 'hicon',
+              'arctic': 'arctic',
+              'mono': 'monochrome',
+              'sunset': 'sunset',
+              'sepia': 'sepia',
+              'coral': 'coral-fushia',
+              'midnight': 'midnight',
+              'rosegarden': 'rosey',
+              'storm': 'storm'
             };
 
             const cssClassName = themeToCssClass[savedTheme] || savedTheme;

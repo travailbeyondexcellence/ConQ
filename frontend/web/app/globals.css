@@ -1,62 +1,58 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    /* Default theme (Emerald) colors will be injected by JS */
-    --background: 234 255 242;
-    --foreground: 9 9 11;
-    --card: 230 255 232;
-    --card-foreground: 24 24 27;
-    --primary: 5 150 105;
-    --primary-foreground: 255 255 255;
-    --secondary: 16 185 129;
-    --secondary-foreground: 255 255 255;
-    --accent: 52 211 153;
-    --accent-foreground: 2 44 34;
-    --muted: 212 255 216;
-    --muted-foreground: 107 114 128;
-    --border: 195 255 200;
-    --selection: 167 243 208;
-    --link: 5 150 105;
-    --link-hover: 4 120 87;
-    --destructive: 220 38 38;
-    --destructive-foreground: 255 255 255;
-    --success: 5 150 105;
-    --success-foreground: 255 255 255;
-    --warning: 217 119 6;
-    --warning-foreground: 255 255 255;
-  }
+/* CSS Variables */
+:root {
+  /* Default theme (Emerald) colors will be injected by JS */
+  --background: 234 255 242;
+  --foreground: 9 9 11;
+  --card: 230 255 232;
+  --card-foreground: 24 24 27;
+  --primary: 5 150 105;
+  --primary-foreground: 255 255 255;
+  --secondary: 16 185 129;
+  --secondary-foreground: 255 255 255;
+  --accent: 52 211 153;
+  --accent-foreground: 2 44 34;
+  --muted: 212 255 216;
+  --muted-foreground: 107 114 128;
+  --border: 195 255 200;
+  --selection: 167 243 208;
+  --link: 5 150 105;
+  --link-hover: 4 120 87;
+  --destructive: 220 38 38;
+  --destructive-foreground: 255 255 255;
+  --success: 5 150 105;
+  --success-foreground: 255 255 255;
+  --warning: 217 119 6;
+  --warning-foreground: 255 255 255;
 }
 
-@layer base {
-  * {
-    border-color: rgb(var(--border));
-  }
+/* Base Styles */
+* {
+  border-color: rgb(var(--border));
+}
 
-  body {
-    background-color: rgb(var(--background));
-    color: rgb(var(--foreground));
-    font-feature-settings: "rlig" 1, "calt" 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  /* Global slim scrollbar for Firefox */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(var(--border)) transparent;
-  }
+/* Global slim scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--border)) transparent;
+}
 
-  *:hover {
-    scrollbar-color: rgb(var(--muted)) transparent;
-  }
+*:hover {
+  scrollbar-color: rgb(var(--muted)) transparent;
+}
 
-  ::selection {
-    background-color: rgb(var(--selection) / 0.5);
-    color: rgb(var(--foreground));
-  }
+::selection {
+  background-color: rgb(var(--selection) / 0.5);
+  color: rgb(var(--foreground));
 }
 
 /* Custom scrollbar - Webkit browsers */

@@ -1,12 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getAllThemes } from '@/lib/theme-utils';
 
-export type ThemeKey = 'emerald' | 'midnight';
+export type ThemeKey = 'emerald' | 'emnight' | 'celeste' | 'hicon' | 'arctic' | 'mono' | 'sunset' | 'sepia' | 'coral' | 'midnight' | 'rosegarden' | 'storm';
 
 // Map theme keys to CSS class names
 const themeToCssClass: Record<string, string> = {
   'emerald': 'emerald',
-  'midnight': 'midnight'
+  'emnight': 'emerald-night',
+  'celeste': 'celeste',
+  'hicon': 'hicon',
+  'arctic': 'arctic',
+  'mono': 'monochrome',
+  'sunset': 'sunset',
+  'sepia': 'sepia',
+  'coral': 'coral-fushia',
+  'midnight': 'midnight',
+  'rosegarden': 'rosey',
+  'storm': 'storm'
 };
 
 export function useTheme() {
