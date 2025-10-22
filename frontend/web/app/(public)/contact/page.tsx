@@ -1,16 +1,18 @@
+import { ContactHero, ContactInfo, ContactForm, ContactFAQ } from '@/components/contact';
+
 export default function Contact() {
   return (
     <main className="min-h-screen">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-            Contact
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Contact page content coming soon...
-          </p>
-        </div>
+      <ContactHero
+        title="Let's Connect"
+        subtitle="Get in Touch"
+        description="Have a question or want to learn more about ConQ? We're here to help. Reach out to us and we'll get back to you as soon as possible."
+      />
+      <ContactInfo />
+      <div id="contact-form">
+        <ContactForm />
       </div>
+      <ContactFAQ />
     </main>
   );
 }
