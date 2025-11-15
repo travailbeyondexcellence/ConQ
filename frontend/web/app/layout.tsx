@@ -1,7 +1,7 @@
 import "./globals.css";
 import ThemeScript from "./theme-script";
-import Navbar from "@/components/Navbar";
 import { Providers } from "./providers";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 
 export const metadata = {
   title: "Conq - Social Media Content Pipeline Manager",
@@ -18,9 +18,9 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <Providers>
-          <Navbar />
+          <ConditionalNavbar />
           {children}
         </Providers>
       </body>
